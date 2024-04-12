@@ -1,4 +1,5 @@
 import connectLiveReload from "connect-livereload";
+import connectPG from "connect-pg-simple";
 import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
 import { create } from "express-handlebars";
@@ -98,7 +99,15 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   name: "session",
+  store: new (connectPG(session))({
+    pool: new pg.Pool({
+      user: "postgres",
+      password: "postgres",
+      host: process.env.POSTGRES_HOST ?? "localhost",
+    }),
+  }),
 }));
+
 
 login(app);
 

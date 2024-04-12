@@ -1,16 +1,17 @@
 import bcrypt from "bcrypt";
 import type { Express, Request, Response } from "express";
+import crypto from "node:crypto";
 import path from "node:path";
-import { createUser, delCode, getCode, getUser } from "./db";
+import { changeUserPass, createUser, delCode, getCode, getUser, resetUserPass } from "./db";
 import { basePath } from "./index";
 
 export default function (app: Express) {
   app.get(path.join(basePath, "/"), async (req: Request, res: Response) => {
-    const perms = (req.query.perms as string ?? "").split(";");
+    const perms = (req.query.perms as string ?? "").split(";")
+          .filter(v => v);
 
     if (req.session.user) {
       const user = await getUser(req.session.user);
-      console.log(user);
       if (perms.every(p => user.perms.includes(p))) {
         res.sendStatus(200);
         return;
@@ -69,39 +70,59 @@ export default function (app: Express) {
   app.post(path.join(basePath, "/register"), async (req: Request, res: Response) => {
     const { username, password, csrf, code } = req.body;
 
-    const usernameFree = await getUser(username)
-          .then(() => false, () => true);
-
-    const codeDb = await getCode(code).catch(() => false);
+    const user = await getUser(username)
+          .catch(() => false);
 
     let error: string | false = false;
-    if (!usernameFree) {
-      error = "username taken";
-    } else if (!codeDb) {
-      error = "invalid code";
-    } else if (password.length < 8 || password.length > 128) {
-      error = "bad password";
-    } else if (csrf !== req.session.csrf) {
-      error = "csrf invalid";
+    if (user && user.passReset) {
+      if (!code !== user.resetCode) {
+        error = "invalid code";
+      } else if (password.length < 8 || password.length > 128) {
+        error = "bad password";
+      } else if (csrf !== req.session.csrf) {
+        error = "csrf invalid";
+      }
+
+      if (!error) {
+        await changeUserPass(username, await bcrypt.hash(password, 12));
+
+        res.redirect(path.join(basePath, "/login"));
+        return;
+      }
+    } else {
+      const codeDb = await getCode(code).catch(() => false);
+
+      if (user) {
+        error = "username taken";
+      } else if (!codeDb) {
+        error = "invalid code";
+      } else if (password.length < 8 || password.length > 128) {
+        error = "bad password";
+      } else if (csrf !== req.session.csrf) {
+        error = "csrf invalid";
+      }
+
+      if (!error) {
+        await createUser(username, await bcrypt.hash(password, 12), codeDb.perms);
+        await delCode(codeDb.code);
+
+        res.redirect(path.join(basePath, "/"));
+        return;
+      }
     }
 
-    if (!req.session.csrf) {
-      req.session.csrf = crypto.randomUUID();
-    }
 
     if (error) {
+      if (!req.session.csrf) {
+        req.session.csrf = crypto.randomUUID();
+      }
+
       res.status(403).render("register", {
         title: "register",
         csrf: req.session.csrf,
         error: error,
       });
-      return;
     }
-
-    await createUser(username, await bcrypt.hash(password, 12), codeDb.perms);
-    await delCode(codeDb.code);
-
-    res.sendStatus(200);
   });
 
 
@@ -117,6 +138,29 @@ export default function (app: Express) {
   });
 
   app.post(path.join(basePath, "/reset"), async (req: Request, res: Response) => {
-    res.sendStatus(401);
+    const { username, csrf } = req.body;
+
+    const user = await getUser(username)
+          .catch(() => false);
+
+    if (csrf !== req.session.csrf) {
+      if (!req.session.csrf) {
+        req.session.csrf = crypto.randomUUID();
+      }
+
+      res.status(403).render("reset", {
+        title: "password reset",
+        csrf: req.session.csrf,
+        error: "csrf invalid",
+      });
+      return;
+    }
+
+    if (user) {
+      const code = crypto.randomBytes(4).toString("hex");
+      await resetUserPass(user.username, code);
+    }
+
+    res.redirect(path.join(basePath, "/register"));
   });
 }

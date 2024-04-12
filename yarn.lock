@@ -156,6 +156,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/connect-pg-simple@npm:^7.0.3":
+  version: 7.0.3
+  resolution: "@types/connect-pg-simple@npm:7.0.3"
+  dependencies:
+    "@types/express": "*"
+    "@types/express-session": "*"
+    "@types/pg": "*"
+  checksum: 231911352e4036c7a316f5adfaa427ca89ef0d2e898892274a782851401631e874d9f07dd6090e64a0cd587c8f8522afb20c506f7144f033a14aaad9b765fdd6
+  languageName: node
+  linkType: hard
+
 "@types/connect@npm:*":
   version: 3.4.38
   resolution: "@types/connect@npm:3.4.38"
@@ -195,7 +206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-session@npm:^1":
+"@types/express-session@npm:*, @types/express-session@npm:^1":
   version: 1.18.0
   resolution: "@types/express-session@npm:1.18.0"
   dependencies:
@@ -248,7 +259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg@npm:^8":
+"@types/pg@npm:*, @types/pg@npm:^8":
   version: 8.11.5
   resolution: "@types/pg@npm:8.11.5"
   dependencies:
@@ -448,6 +459,7 @@ __metadata:
   dependencies:
     "@types/bcrypt": ^5
     "@types/connect-livereload": ^0
+    "@types/connect-pg-simple": ^7.0.3
     "@types/cookie-parser": ^1.4.7
     "@types/cors": ^2.8.17
     "@types/express": ^4.17.21
@@ -458,6 +470,7 @@ __metadata:
     "@types/qs": ^6.9.12
     bcrypt: ^5.1.1
     connect-livereload: ^0.6.1
+    connect-pg-simple: ^9.0.1
     cookie-parser: ^1.4.6
     cors: ^2.8.5
     express: ^4.18.3
@@ -656,6 +669,15 @@ __metadata:
   version: 0.6.1
   resolution: "connect-livereload@npm:0.6.1"
   checksum: a0d2d8ca311be067108b229c8c918fb9ba18c8e72004a085b596cc6567b135a771db0cae83a2093e965696d5cc0688124b105d5ffb41b29311d4fadd344eef9f
+  languageName: node
+  linkType: hard
+
+"connect-pg-simple@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "connect-pg-simple@npm:9.0.1"
+  dependencies:
+    pg: ^8.8.0
+  checksum: 4a18fc0b7318972dde5a063bc50a9f3e886cd321286288c64fa6f26000c1cd1fbb3671ac3d9d0ed5edbffa8f839189f39ce91a725202f3b933db61a5b872a3cc
   languageName: node
   linkType: hard
 
@@ -1998,7 +2020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:^8.11.5":
+"pg@npm:^8.11.5, pg@npm:^8.8.0":
   version: 8.11.5
   resolution: "pg@npm:8.11.5"
   dependencies:

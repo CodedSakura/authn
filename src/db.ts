@@ -17,6 +17,22 @@ export async function createUser(name: string, password: string, perms: string[]
   );
 }
 
+export async function changeUserPass(name: string, password: string): Promise<void> {
+  await postgres.query(
+        //language=PostgreSQL
+        "UPDATE users SET password = $1, resetcode = '', passreset = false WHERE username = $2",
+        [ password, name ],
+  );
+}
+
+export async function resetUserPass(name: string, code: string): Promise<void> {
+  await postgres.query(
+        //language=PostgreSQL
+        "UPDATE users SET resetcode = $1, passreset = true WHERE username = $2",
+        [ code, name ],
+  );
+}
+
 export async function userCount(): Promise<number> {
   //language=PostgreSQL
   return (await postgres.query("SELECT count(*) FROM users")).rows[0].count;
