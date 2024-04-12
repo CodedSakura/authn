@@ -1,27 +1,65 @@
 import connectLiveReload from "connect-livereload";
+import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
 import { create } from "express-handlebars";
+import session from "express-session";
 import livereload from "livereload";
 import fs from "node:fs";
+import { readdir, readFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
 import path from "node:path";
 import qs from "qs";
 import sass from "sass";
 import login from "./login";
+import pg from "pg";
+
+
+declare module 'express-session' {
+  export interface SessionData {
+    csrf?: string;
+    perms?: string[];
+    expires?: string;
+  }
+}
+
+
+if (!process.env.SECRET_COOKIE || !process.env.SECRET_SESSION) {
+  console.error("provide both SECRET_COOKIE and SECRET_SESSION");
+  process.exit(1);
+}
 
 
 export const basePath = ("/" + (process.env.BASE_PATH ?? "")
       .replace(/\/$/, "")
       .replace(/^\//, "") + "/").replace(/^\/\/$/, "/");
 
-const liveReloadServer = livereload.createServer();
-liveReloadServer.server.once("connection", () => {
-  setTimeout(() => {
-    liveReloadServer.refresh("/");
-  });
-});
-
 const app = express();
+
+
+export const postgres = new pg.Client({
+  user: "postgres",
+  password: "postgres",
+  host: process.env.POSTGRES_HOST ?? "localhost",
+});
+postgres.connect()
+      .then(async () => {
+        let runMigrationsFromExcl = await postgres
+              .query("SELECT version FROM migrations")
+              .then(r => r.rows[0], () => "0000-00-00_00");
+
+        const migrations = (await readdir(path.join(__dirname, "../migrations")))
+              .filter(v => v > runMigrationsFromExcl)
+              .map(v => path.join(__dirname, "../migrations", v));
+
+        for (const file of migrations) {
+          console.log(`running migration ${file}`);
+          await postgres.query(await readFile(file, "utf-8"));
+        }
+        if (migrations.length > 0) {
+          console.log("migrations done");
+        }
+      }, console.error);
+
 
 const hbs = create({
   helpers: {
@@ -38,9 +76,30 @@ app.set("query parser", (str: string) => {
   return qs.parse(str);
 });
 
+
+const liveReloadServer = livereload.createServer();
+liveReloadServer.server.once("connection", () => {
+  setTimeout(() => {
+    liveReloadServer.refresh("/");
+  });
+});
+
 app.use(connectLiveReload());
 
+
+app.use(express.urlencoded({ extended: false }));
+
+app.use(cookieParser(process.env.SECRET_COOKIE));
+
+app.use(session({
+  secret: process.env.SECRET_SESSION as string,
+  resave: false,
+  saveUninitialized: false,
+  name: "session",
+}));
+
 login(app);
+
 
 app.get(path.join(basePath, "*.css"), (req: Request, res: Response) => {
   const urlBase = path.dirname(path.relative(path.join(basePath, "/"), req.url));
@@ -62,6 +121,7 @@ app.get(path.join(basePath, "*.css"), (req: Request, res: Response) => {
 });
 
 app.use(path.join(basePath, "/"), express.static(path.resolve(__dirname, "../public")));
+
 
 const listener = app.listen(Number(process.env.PORT ?? 3000), () => {
   const address = listener.address()! as AddressInfo;
