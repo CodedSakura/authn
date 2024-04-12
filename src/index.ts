@@ -7,6 +7,7 @@ import type { AddressInfo } from "node:net";
 import path from "node:path";
 import qs from "qs";
 import sass from "sass";
+import login from "./login";
 
 
 export const basePath = ("/" + (process.env.BASE_PATH ?? "")
@@ -25,6 +26,7 @@ const app = express();
 const hbs = create({
   helpers: {
     eq: (a: any, b: any) => a == b,
+    path: (p: any) => path.join(basePath, p),
   },
 });
 
@@ -37,6 +39,8 @@ app.set("query parser", (str: string) => {
 });
 
 app.use(connectLiveReload());
+
+login(app);
 
 app.get(path.join(basePath, "*.css"), (req: Request, res: Response) => {
   const urlBase = path.dirname(path.relative(path.join(basePath, "/"), req.url));

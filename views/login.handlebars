@@ -1,0 +1,22 @@
+<form action="{{path "/"}}" method="post">
+  {{#if error}}<div class="error">{{error}}</div>{{/if}}
+  {{#if perms}}<div>required perms: {{perms}}</div>{{/if}}
+  <label>
+    username:
+    <input name="username">
+  </label>
+  <label>
+    password:
+    <input type="password" name="password">
+  </label>
+  <input type="submit" value="login">
+  <input type="hidden" name="csrf" value="{{csrf}}">
+  <label>
+    <input type="checkbox" name="remember">
+    rember me
+  </label>
+  <div>
+    <a href="{{path "/register"}}">register</a>
+    <a href="{{path "/reset"}}">forgor passwd</a>
+  </div>
+</form>
