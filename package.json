@@ -3,6 +3,7 @@
   "packageManager": "yarn@3.6.4",
   "dependencies": {
     "@types/cookie-parser": "^1.4.7",
+    "bcrypt": "^5.1.1",
     "connect-livereload": "^0.6.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -20,6 +21,7 @@
     "typescript": "^5.4.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5",
     "@types/connect-livereload": "^0",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",

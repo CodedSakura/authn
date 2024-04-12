@@ -8,17 +8,16 @@ import fs from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
 import path from "node:path";
+import pg from "pg";
 import qs from "qs";
 import sass from "sass";
 import login from "./login";
-import pg from "pg";
 
 
 declare module 'express-session' {
   export interface SessionData {
     csrf?: string;
-    perms?: string[];
-    expires?: string;
+    user?: string;
   }
 }
 
@@ -45,10 +44,13 @@ postgres.connect()
       .then(async () => {
         let runMigrationsFromExcl = await postgres
               .query("SELECT version FROM migrations")
-              .then(r => r.rows[0], () => "0000-00-00_00");
+              .then(
+                    r => r.rows[0].version,
+                    () => "0000-00-00_00",
+              );
 
         const migrations = (await readdir(path.join(__dirname, "../migrations")))
-              .filter(v => v > runMigrationsFromExcl)
+              .filter(v => v > `${runMigrationsFromExcl}.sql`)
               .map(v => path.join(__dirname, "../migrations", v));
 
         for (const file of migrations) {
