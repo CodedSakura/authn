@@ -12,6 +12,7 @@ import path from "node:path";
 import pg from "pg";
 import qs from "qs";
 import sass from "sass";
+import dash from "./dash";
 import login from "./login";
 
 
@@ -68,6 +69,10 @@ const hbs = create({
   helpers: {
     eq: (a: any, b: any) => a == b,
     path: (p: any) => path.join(basePath, p),
+    fmtDate: (date: any) => new Intl.DateTimeFormat("se-SV", {
+      dateStyle: "short",
+    }).format(new Date(date)),
+    join: (l: any[], j: any) => l.join(j),
   },
 });
 
@@ -110,6 +115,8 @@ app.use(session({
 
 
 login(app);
+
+dash(app);
 
 
 app.get(path.join(basePath, "*.css"), (req: Request, res: Response) => {

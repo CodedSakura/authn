@@ -1,0 +1,107 @@
+{{#if success}}
+  <div class="success">{{success}}</div>{{/if}}
+{{#if newCode}}
+  <div class="success">
+    new code: <code>{{newCode.code}}</code>
+    {{#if newCode.perms}}granting '{{newCode.perms}}'{{/if}}
+    expires {{fmtDate newCode.expires}}
+  </div>{{/if}}
+
+{{#if passResets}}
+  <section>
+    <header>pass resets</header>
+
+    <table>
+      <thead>
+      <tr>
+        <th>user</th>
+        <th>code</th>
+      </tr>
+      </thead>
+      <tbody>
+      {{#each passResets}}
+        <tr>
+          <td>{{username}}</td>
+          <td><code>{{resetcode}}</code></td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </section>
+{{/if}}
+
+<section>
+  <header>registration codes</header>
+
+  <table>
+    <thead>
+    <tr>
+      <th>code</th>
+      <th>perms</th>
+      <th>expires</th>
+      <th>issued</th>
+      <th>delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each codes}}
+      <tr>
+        <td><code>{{code}}</code></td>
+        <td>{{join perms ";"}}</td>
+        <td>{{fmtDate expires}}</td>
+        <td>{{fmtDate issued}}</td>
+        <td><a href="{{path "/dash?delCode="}}{{code}}">delete</a></td>
+      </tr>
+    {{else}}
+      <tr>
+        <td colspan="6" style="text-align: center">no codes</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+  <form action="{{path "/dash?newCode"}}" method="post">
+    <label>
+      perms, semicolon separated:
+      <input name="perms">
+    </label>
+    <label>
+      expires:
+      <input name="expires" type="date">
+    </label>
+    <input type="submit" value="create code">
+  </form>
+</section>
+
+<section>
+  <header>users</header>
+
+  <table>
+    <thead>
+    <tr>
+      <th>username</th>
+      <th>perms</th>
+      <th>expires</th>
+      <th>edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each users}}
+      <tr>
+        <td>
+          <form id="{{username}}" action="{{path "/dash?editUser"}}" method="post">
+            <input value="{{username}}" name="username" readonly>
+          </form>
+        </td>
+        <td><input form="{{username}}" name="perms" value="{{join perms ";"}}"></td>
+        <td>{{fmtDate expires}}</td>
+        <td><input form="{{username}}" type="submit" value="save"></td>
+      </tr>
+    {{else}}
+      <tr>
+        <td colspan="4" style="text-align: center">no users</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+</section>

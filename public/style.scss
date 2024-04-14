@@ -21,7 +21,7 @@ body {
     color: #000;
   }
   @media screen and (max-width: 320px) {
-    align-items: start;
+    justify-content: start;
   }
 }
 
@@ -42,13 +42,28 @@ body > form {
     display: flex;
     justify-content: space-between;
   }
+}
 
-  .error {
-    background: rgba(244, 67, 54, 0.5);
-    border-radius: .25em;
-    padding: .25em;
-    text-align: center;
-  }
+.error {
+  background: rgba(244, 67, 54, 0.5);
+  border-radius: .25em;
+  padding: .25em;
+  text-align: center;
+}
+
+.success {
+  background: rgba(54, 244, 63, 0.5);
+  border-radius: .25em;
+  padding: .25em;
+  text-align: center;
+}
+
+code {
+  background: #212121;
+  color: #BF360C;
+  font-weight: bold;
+  border: 1px solid #444;
+  border-radius: .25em;
 }
 
 label > input:not([type="checkbox"]) {
@@ -94,5 +109,59 @@ a {
   color: #d3d;
   &:active {
     color: #e8e;
+  }
+}
+
+section {
+  margin: 1em 0;
+  padding: 0 1em;
+  width: 100%;
+  max-width: 800px;
+
+  header {
+    font-size: 1.25em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: .25em;
+
+    input:not([type="submit"]) {
+      all: unset;
+      width: 100%;
+    }
+
+    thead {
+      background: #6666;
+    }
+
+    th, td {
+      border: 1px solid #666;
+      white-space: nowrap;
+    }
+
+    tbody {
+      th, td {
+        border-top: none;
+      }
+    }
+
+    th:first-of-type {
+      border-top-left-radius: .25em;
+    }
+
+    th:last-of-type {
+      border-top-right-radius: .25em;
+    }
+
+    tr:last-of-type td:first-of-type {
+      border-bottom-left-radius: .25em;
+    }
+
+    tr:last-of-type td:last-of-type {
+      border-bottom-right-radius: .25em;
+    }
   }
 }
