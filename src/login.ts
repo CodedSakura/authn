@@ -48,7 +48,7 @@ export default function (app: Express) {
       req.session.csrf = crypto.randomUUID();
     }
 
-    res.status(403).render("login", {
+    res.status(400).render("login", {
       title: "login",
       csrf: req.session.csrf,
       error: "invalid username or password",
@@ -117,7 +117,7 @@ export default function (app: Express) {
         req.session.csrf = crypto.randomUUID();
       }
 
-      res.status(403).render("register", {
+      res.status(400).render("register", {
         title: "register",
         csrf: req.session.csrf,
         error: error,
@@ -148,7 +148,7 @@ export default function (app: Express) {
         req.session.csrf = crypto.randomUUID();
       }
 
-      res.status(403).render("reset", {
+      res.status(400).render("reset", {
         title: "password reset",
         csrf: req.session.csrf,
         error: "csrf invalid",

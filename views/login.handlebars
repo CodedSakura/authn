@@ -3,11 +3,11 @@
   {{#if perms}}<div>required perms: {{perms}}</div>{{/if}}
   <label>
     username:
-    <input name="username">
+    <input name="username" required>
   </label>
   <label>
     password:
-    <input type="password" name="password">
+    <input type="password" name="password" required>
   </label>
   <input type="submit" value="login">
   <input type="hidden" name="csrf" value="{{csrf}}">

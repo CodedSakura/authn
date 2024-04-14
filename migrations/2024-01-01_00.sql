@@ -27,7 +27,8 @@ create table codes
 (
     code    text primary key not null,
     expires date   default date '2100-01-01',
-    perms text[] default array [] :: text[]
+    issued date   default now() :: date,
+    perms  text[] default array [] :: text[]
 );
 
 insert into codes (code, perms)
