@@ -30,7 +30,7 @@ export default function (app: Express) {
   });
 
   app.post(path.join(basePath, "/"), async (req: Request, res: Response) => {
-    const { username, password, csrf } = req.body;
+    const { username, password, csrf, remember } = req.body;
 
     const user = await getUser(username).catch(() => false);
     let success =
@@ -39,6 +39,8 @@ export default function (app: Express) {
           await bcrypt.compare(password, user.password);
 
     if (success) {
+      req.session.cookie.maxAge = remember ? 365 * 24 * 60 * 60 * 1000 : undefined;
+
       req.session.user = username;
       res.sendStatus(200);
       return;
@@ -162,5 +164,12 @@ export default function (app: Express) {
     }
 
     res.redirect(path.join(basePath, "/register"));
+  });
+
+
+  app.get(path.join(basePath, "/logout"), async (req: Request, res: Response) => {
+    await new Promise(res => req.session.destroy(res));
+
+    res.sendStatus(200);
   });
 }
