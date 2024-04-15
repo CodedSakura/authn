@@ -20,6 +20,7 @@ declare module 'express-session' {
   export interface SessionData {
     csrf?: string;
     user?: string;
+    forward?: any;
   }
 }
 

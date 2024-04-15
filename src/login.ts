@@ -22,6 +22,8 @@ export default function (app: Express) {
       req.session.csrf = crypto.randomUUID();
     }
 
+    req.session.forward = req.header("X-Forwarded-URI") ?? undefined;
+
     res.status(401).render("login", {
       title: "login",
       csrf: req.session.csrf,
@@ -40,9 +42,14 @@ export default function (app: Express) {
 
     if (success) {
       req.session.cookie.maxAge = remember ? 365 * 24 * 60 * 60 * 1000 : undefined;
-
       req.session.user = username;
-      res.sendStatus(200);
+
+      if (req.session.forward) {
+        res.redirect(req.session.forward);
+      } else {
+        res.sendStatus(200);
+      }
+
       return;
     }
 
