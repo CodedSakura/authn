@@ -10,10 +10,10 @@ export async function getUser(name: string): Promise<any> {
 }
 
 //language=PostgreSQL
-export async function createUser(name: string, password: string, perms: string[]): Promise<void> {
+export async function createUser(name: string, password: string, perms: string[], expires: Date | null): Promise<void> {
   await postgres.query(
-        "INSERT INTO users (username, password, perms) values ($1, $2, $3)",
-        [ name, password, perms ],
+        "INSERT INTO users (username, password, perms, expires) values ($1, $2, $3, $4)",
+        [ name, password, perms, expires ],
   );
 }
 

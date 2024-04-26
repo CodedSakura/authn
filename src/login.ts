@@ -112,7 +112,7 @@ export default function (app: Express) {
       }
 
       if (!error) {
-        await createUser(username, await bcrypt.hash(password, 12), codeDb.perms);
+        await createUser(username, await bcrypt.hash(password, 12), codeDb.perms, codeDb.expires ?? null);
         await delCode(codeDb.code);
 
         res.redirect(path.join(basePath, "/"));

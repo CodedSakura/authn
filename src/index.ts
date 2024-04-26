@@ -70,9 +70,9 @@ const hbs = create({
   helpers: {
     eq: (a: any, b: any) => a == b,
     path: (p: any) => path.join(basePath, p),
-    fmtDate: (date: any) => new Intl.DateTimeFormat("se-SV", {
+    fmtDate: (date: any) => date ? new Intl.DateTimeFormat("se-SV", {
       dateStyle: "short",
-    }).format(new Date(date)),
+    }).format(new Date(date)) : null,
     join: (l: any[], j: any) => l.join(j),
   },
 });
