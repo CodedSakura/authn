@@ -12,6 +12,8 @@ intended to be used as a traefik froward auth middleware
 
 `BASE_PATH` - if not hosted on `/` set to path prefix
 
+`CRON` - cron string for running the expires job
+
 ### traefik
 
 ```yaml

@@ -86,3 +86,15 @@ export async function createCode(code: string, perms?: string, expires?: Date) {
     }
   }
 }
+
+
+export async function deleteExpired() {
+  await postgres.query(`
+      DELETE
+      FROM users
+      WHERE expires < now()::date;
+      DELETE
+      FROM codes
+      WHERE expires < now()::date;
+  `);
+}

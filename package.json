@@ -14,6 +14,7 @@
     "express-session": "^1.18.0",
     "helmet": "^7.1.0",
     "livereload": "^0.9.3",
+    "node-cron": "^3.0.3",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5",
     "qs": "^6.12.0",
@@ -30,6 +31,7 @@
     "@types/express-session": "^1",
     "@types/livereload": "^0",
     "@types/node": "^20.11.28",
+    "@types/node-cron": "^3",
     "@types/pg": "^8",
     "@types/qs": "^6.9.12"
   },

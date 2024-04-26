@@ -5,6 +5,7 @@ import express, { Request, Response } from "express";
 import { create } from "express-handlebars";
 import session from "express-session";
 import livereload from "livereload";
+import cron from "node-cron";
 import fs from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
@@ -13,6 +14,7 @@ import pg from "pg";
 import qs from "qs";
 import sass from "sass";
 import dash from "./dash";
+import { deleteExpired } from "./db";
 import login from "./login";
 
 
@@ -146,3 +148,7 @@ const listener = app.listen(Number(process.env.PORT ?? 80), () => {
   const address = listener.address()! as AddressInfo;
   console.log(`App started on ${address.port}, base path = '${basePath}'`);
 });
+
+
+// default: once every hour
+cron.schedule(process.env.CRON ?? "0 * * * *", deleteExpired);
