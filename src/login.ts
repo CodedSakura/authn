@@ -22,6 +22,8 @@ export default function (app: Express) {
       req.session.csrf = crypto.randomUUID();
     }
 
+    req.session.forward = req.get("X-Forwarded-Uri");
+
     res.status(401).render("login", {
       title: "login",
       csrf: req.session.csrf,

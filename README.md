@@ -2,6 +2,25 @@
 
 intended to be used as a traefik froward auth middleware
 
+## usage
+
+### env
+
+`SECRET_COOKIE`, `SECRET_SESSION` - preferably random strings
+
+`POSTGRES_HOST` - postgres hostname
+
+`BASE_PATH` - if not hosted on `/` set to path prefix
+
+### traefik
+
+```yaml
+- "traefik.http.middlewares.service.forwardAuth.address=https://authn.com?perms=role"
+- "traefik.http.middlewares.service.forwardAuth.trustForwardHeader=true"
+```
+
+you'll likely need to add `extra_hosts` to the traefik container mapping the `authn.com` to localhost
+
 ## endpoints
 
 `GET /` - login view, returns 401 and a form if not authorised, 200 and nothing otherwise
