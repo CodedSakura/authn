@@ -142,7 +142,7 @@ app.get(path.join(basePath, "*.css"), (req: Request, res: Response) => {
 app.use(path.join(basePath, "/"), express.static(path.resolve(__dirname, "../public")));
 
 
-const listener = app.listen(Number(process.env.PORT ?? 3000), () => {
+const listener = app.listen(Number(process.env.PORT ?? 80), () => {
   const address = listener.address()! as AddressInfo;
   console.log(`App started on ${address.port}, base path = '${basePath}'`);
 });
