@@ -1,7 +1,7 @@
 import type { Express, NextFunction, Request, Response } from "express";
 import crypto from "node:crypto";
 import path from "node:path";
-import { changeUserPerms, createCode, delCode, getCode, getCodes, getUser, getUsers } from "./db";
+import { createCode, delCode, getCode, getCodes, getUser, getUsers, updateUser } from "./db";
 import { basePath } from "./index";
 
 export default function (app: Express) {
@@ -51,12 +51,19 @@ export default function (app: Express) {
     }
 
     if (req.query.editUser !== undefined) {
-      const { perms, username } = req.body;
+      const { perms, username, expires } = req.body;
 
-      await changeUserPerms(username, perms.split(";"));
+      if (expires && !/^\d{4}-[01]\d-[0-3]\d$/.test(expires)) {
+        await renderDash(res, {
+          error: `invalid date (${expires}), must match yyyy-mm-dd format`,
+        });
+        return;
+      }
+
+      await updateUser(username, perms.split(";"), expires ? new Date(expires) : null);
 
       await renderDash(res, {
-        success: `perms of ${username} updated`,
+        success: `user ${username} updated`,
       });
       return;
     }

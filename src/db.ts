@@ -25,10 +25,10 @@ export async function changeUserPass(name: string, password: string): Promise<vo
   );
 }
 
-export async function changeUserPerms(name: string, perms: string) {
+export async function updateUser(name: string, perms: string, expires: Date | null) {
   await postgres.query(
-        "UPDATE users SET perms = $1 WHERE username = $2",
-        [ perms, name ],
+        "UPDATE users SET perms = $1, expires = $2 WHERE username = $3",
+        [ perms, expires, name ],
   );
 }
 

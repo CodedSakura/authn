@@ -1,11 +1,16 @@
 {{#if success}}
-  <div class="success">{{success}}</div>{{/if}}
+  <div class="success">{{success}}</div>
+{{/if}}
+{{#if error}}
+  <div class="error">{{error}}</div>
+{{/if}}
 {{#if newCode}}
   <div class="success">
     new code: <code>{{newCode.code}}</code>
     {{#if newCode.perms}}granting '{{newCode.perms}}'{{/if}}
     expires {{fmtDate newCode.expires}}
-  </div>{{/if}}
+  </div>
+{{/if}}
 
 {{#if passResets}}
   <section>
@@ -94,7 +99,7 @@
           </form>
         </td>
         <td><input form="{{username}}" name="perms" value="{{join perms ";"}}"></td>
-        <td>{{fmtDate expires}}</td>
+        <td><input form="{{username}}" name="expires" value="{{fmtDate expires}}"></td>
         <td><input form="{{username}}" type="submit" value="save"></td>
       </tr>
     {{else}}
