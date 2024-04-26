@@ -17,10 +17,11 @@ export default function (app: Express) {
   };
 
   const renderDash = async (res: Response, opts: Record<string, any>) => {
-    const users = await getUsers();
+    const users = (await getUsers())
+          .sort((a, b) => a.username.localeCompare(b.username));
     res.render("dash", {
       title: "dash",
-      codes: await getCodes(),
+      codes: (await getCodes()).sort((a, b) => a.issued - b.issued),
       users: users,
       passResets: users.filter(v => v.passreset),
       ...opts,
