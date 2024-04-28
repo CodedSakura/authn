@@ -36,7 +36,8 @@ if (!process.env.SECRET_COOKIE || !process.env.SECRET_SESSION) {
 export const basePath = ("/" + (process.env.BASE_PATH ?? "")
       .replace(/\/$/, "")
       .replace(/^\//, "") + "/").replace(/^\/\/$/, "/");
-export const fullPath = process.env.FULL_PATH ?? basePath;
+export const baseUrl = process.env.BASE_URL ?? ("http://localhost:" + process.env.PORT);
+export const getFullURL = (p: string) => new URL(path.join(basePath, p), baseUrl).href;
 
 const app = express();
 
@@ -72,7 +73,7 @@ postgres.connect()
 const hbs = create({
   helpers: {
     eq: (a: any, b: any) => a == b,
-    path: (p: any) => path.join(fullPath, p),
+    path: getFullURL,
     fmtDate: (date: any) => date ? new Intl.DateTimeFormat("se-SV", {
       dateStyle: "short",
     }).format(new Date(date)) : null,
@@ -148,7 +149,7 @@ app.use(path.join(basePath, "/"), express.static(path.resolve(__dirname, "../pub
 
 const listener = app.listen(Number(process.env.PORT ?? 80), () => {
   const address = listener.address()! as AddressInfo;
-  console.log(`App started on ${address.port}, full path = '${fullPath}'`);
+  console.log(`App started on ${address.port}, full path = '${getFullURL("/")}'`);
 });
 
 

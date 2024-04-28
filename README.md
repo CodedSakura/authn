@@ -10,9 +10,11 @@ intended to be used as a traefik froward auth middleware
 
 `POSTGRES_HOST` - postgres hostname
 
+`PORT` - port to host the web server on
+
 `BASE_PATH` - if not hosted on `/` set to path prefix
 
-`FULL_PATH` - path used for resources and redirects, defaults to `BASE_PATH`
+`BASE_URL` - base url, defaults to `http://localhost:${PORT}`
 
 `CRON` - cron string for running the expires job
 
