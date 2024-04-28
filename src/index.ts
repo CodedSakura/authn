@@ -100,6 +100,8 @@ liveReloadServer.server.once("connection", () => {
 app.use(connectLiveReload());
 
 
+app.set("trust proxy", 1);
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser(process.env.SECRET_COOKIE));
@@ -118,6 +120,9 @@ app.use(session({
   }),
   cookie: {
     domain: new URL(baseUrl).hostname,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
   },
 }));
 

@@ -2,6 +2,8 @@
 
 intended to be used as a traefik froward auth middleware
 
+works only over HTTPS
+
 ## usage
 
 ### env
@@ -21,8 +23,9 @@ intended to be used as a traefik froward auth middleware
 ### traefik
 
 ```yaml
-- "traefik.http.middlewares.service.forwardAuth.address=https://authn.com?perms=role"
-- "traefik.http.middlewares.service.forwardAuth.trustForwardHeader=true"
+- "traefik.http.middlewares.service-auth.forwardAuth.address=https://authn.com?perms=role"
+- "traefik.http.middlewares.service-auth.forwardAuth.trustForwardHeader=true"
+- "traefik.http.services.service.middlewares=service-auth"
 ```
 
 you'll likely need to add `extra_hosts` to the traefik container mapping the `authn.com` to localhost
