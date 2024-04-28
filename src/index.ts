@@ -116,6 +116,9 @@ app.use(session({
       host: process.env.POSTGRES_HOST ?? "localhost",
     }),
   }),
+  cookie: {
+    domain: new URL(baseUrl).hostname,
+  },
 }));
 
 
