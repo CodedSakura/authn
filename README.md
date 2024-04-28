@@ -12,6 +12,8 @@ intended to be used as a traefik froward auth middleware
 
 `BASE_PATH` - if not hosted on `/` set to path prefix
 
+`FULL_PATH` - path used for resources and redirects, defaults to `BASE_PATH`
+
 `CRON` - cron string for running the expires job
 
 ### traefik

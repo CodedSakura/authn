@@ -3,7 +3,7 @@ import type { Express, Request, Response } from "express";
 import crypto from "node:crypto";
 import path from "node:path";
 import { changeUserPass, createUser, delCode, getCode, getUser, resetUserPass } from "./db";
-import { basePath } from "./index";
+import { basePath, fullPath } from "./index";
 
 export default function (app: Express) {
   app.get(path.join(basePath, "/"), async (req: Request, res: Response) => {
@@ -95,7 +95,7 @@ export default function (app: Express) {
       if (!error) {
         await changeUserPass(username, await bcrypt.hash(password, 12));
 
-        res.redirect(path.join(basePath, "/login"));
+        res.redirect(path.join(fullPath, "/login"));
         return;
       }
     } else {
@@ -115,7 +115,7 @@ export default function (app: Express) {
         await createUser(username, await bcrypt.hash(password, 12), codeDb.perms, codeDb.expires ?? null);
         await delCode(codeDb.code);
 
-        res.redirect(path.join(basePath, "/"));
+        res.redirect(path.join(fullPath, "/"));
         return;
       }
     }
@@ -170,7 +170,7 @@ export default function (app: Express) {
       await resetUserPass(user.username, code);
     }
 
-    res.redirect(path.join(basePath, "/register"));
+    res.redirect(path.join(fullPath, "/register"));
   });
 
 
