@@ -128,15 +128,16 @@ app.get(path.join(basePath, "*.css"), (req: Request, res: Response) => {
   const filename = path.basename(req.url, ".css");
   const extLessPath = path.resolve(__dirname, "../public", urlBase, filename);
   if (fs.existsSync(extLessPath + ".css")) {
-    res.sendFile(extLessPath + ".css");
+    res.set("Content-Type", "text/css")
+          .sendFile(extLessPath + ".css");
     return;
   } else if (fs.existsSync(extLessPath + ".sass")) {
-    res.set("Content-Type", "text/css");
-    res.send(sass.compile(extLessPath + ".sass").css);
+    res.set("Content-Type", "text/css")
+          .send(sass.compile(extLessPath + ".sass").css);
     return;
   } else if (fs.existsSync(extLessPath + ".scss")) {
-    res.set("Content-Type", "text/css");
-    res.send(sass.compile(extLessPath + ".scss").css);
+    res.set("Content-Type", "text/css")
+          .send(sass.compile(extLessPath + ".scss").css);
     return;
   }
   res.sendStatus(404);
