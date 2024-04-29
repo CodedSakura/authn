@@ -37,7 +37,7 @@ export default function (app: Express) {
     const user = await getUser(username).catch(() => false);
     let success =
           user &&
-          csrf === req.session.csrf &&
+          // csrf === req.session.csrf &&
           await bcrypt.compare(password, user.password);
 
     if (success) {
