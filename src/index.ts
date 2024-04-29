@@ -117,6 +117,26 @@ app.use(session({
 }));
 
 
+if (process.env.DEBUG) {
+  app.use(async (req: Request, _res: Response, next) => {
+    console.log(
+          new Intl.DateTimeFormat("se-SV", {
+            dateStyle: "short",
+            timeStyle: "medium",
+          }).format(new Date()),
+
+          req.method,
+          req.url,
+
+          req.get("X-Forwarded-Method"),
+          req.get("X-Forwarded-Uri"),
+    );
+
+    next();
+  });
+}
+
+
 login(app);
 
 dash(app);
